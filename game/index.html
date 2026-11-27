@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2a140c">
+  <title>Turkey Trot: Thanksgiving Escape</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23331a0e'/%3E%3Ccircle cx='34' cy='34' r='16' fill='%238b4a22'/%3E%3Ccircle cx='40' cy='24' r='8' fill='%237a3d1b'/%3E%3Cpath d='M46 24l9 4-9 4z' fill='%23f3b33d'/%3E%3Cpath d='M20 34c-9-8-9-19 1-21 2 9 8 13 15 13' fill='%23c96b2c'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+  <main id="stage" aria-label="Turkey Trot: Thanksgiving Escape">
+    <canvas id="game" width="1280" height="800"></canvas>
+
+    <section id="hud" class="hidden" aria-live="polite">
+      <div class="hud-panel hud-left">
+        <div class="stat score-stat">
+          <span class="stat-label">SCORE</span>
+          <span id="hud-score" class="stat-value">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">DISTANCE</span>
+          <span id="hud-distance" class="stat-value">0 m</span>
+        </div>
+        <div class="stat lives-stat">
+          <span class="stat-label">LIVES</span>
+          <span id="hud-lives" class="lives"></span>
+        </div>
+      </div>
+
+      <div class="hud-panel hud-right">
+        <div class="stage-row">
+          <span id="hud-stage" class="stage-name">STAGE 1 · FARMYARD</span>
+          <span id="hud-progress-text" class="stage-progress-text">0 / 300 m</span>
+        </div>
+        <div class="progress-track"><div id="hud-progress" class="progress-fill"></div></div>
+        <div class="meter-row">
+          <div class="meter combo-meter">
+            <span class="meter-label">COMBO</span>
+            <span id="hud-combo" class="meter-value">x1.0</span>
+            <div class="meter-track"><div id="hud-combo-fill" class="meter-fill combo-fill"></div></div>
+          </div>
+          <div class="meter dash-meter">
+            <span class="meter-label">DASH</span>
+            <span id="hud-dash" class="meter-value">READY</span>
+            <div class="meter-track"><div id="hud-dash-fill" class="meter-fill dash-fill"></div></div>
+          </div>
+          <div id="hud-hide" class="hide-pill">H · HIDE</div>
+        </div>
+      </div>
+
+      <div id="hud-banner" class="hud-banner"></div>
+      <div id="hud-callout" class="hud-callout"></div>
+
+      <div class="controls-strip">
+        <span><b>← →</b> / <b>A D</b> MOVE</span>
+        <span><b>SPACE</b> JUMP · MID-AIR DASH</span>
+        <span><b>SHIFT</b> DASH</span>
+        <span><b>H</b> HIDE AT HAY</span>
+        <span><b>P</b> PAUSE</span>
+        <span><b>R</b> RESTART</span>
+      </div>
+    </section>
+
+    <section id="title-screen" class="screen title-screen">
+      <div class="title-lockup">
+        <div class="title-kicker">A THANKSGIVING GETAWAY</div>
+        <h1 class="title-logo">TURKEY <span>TROT</span></h1>
+        <div class="title-rule"><i></i><b>THANKSGIVING ESCAPE</b><i></i></div>
+        <p class="title-blurb">Outrun the farmer. Dodge the oven. Do not become dinner.</p>
+        <button id="start-button" class="start-button" type="button">
+          <span class="start-main">GOBBLE &amp; RUN</span>
+          <span class="start-sub">CLICK OR PRESS ENTER</span>
+        </button>
+        <div class="title-prompt">PRESS ANY KEY TO START</div>
+      </div>
+
+      <div class="title-controls">
+        <div class="control-card"><span class="key-pair">← →</span><span class="key-pair">W A S D</span><b>MOVE</b></div>
+        <div class="control-card"><span class="key-pair">SPACE</span><b>JUMP · MID-AIR DASH</b></div>
+        <div class="control-card"><span class="key-pair">SHIFT</span><b>GROUND DASH</b></div>
+        <div class="control-card"><span class="key-pair">H</span><b>HIDE AT HAY</b></div>
+        <div class="control-card"><span class="key-pair">P</span><b>PAUSE</b></div>
+        <div class="control-card"><span class="key-pair">R</span><b>RESTART</b></div>
+      </div>
+
+      <div class="title-route"><span>FARMYARD</span><i>→</i><span>BARN</span><i>→</i><span>KITCHEN</span><i>→</i><span class="route-goal">THE WILD</span></div>
+      <div class="title-foot">CORN IS POINTS · HAY BREAKS THE TRAIL · OUTRUNNING BUILDS COMBO</div>
+    </section>
+
+    <section id="pause-screen" class="screen pause-screen hidden">
+      <div class="pause-card">
+        <div class="panel-kicker">CATCH YOUR BREATH</div>
+        <h2>PAUSED</h2>
+        <p>The farmer is waiting. The oven is still hot.</p>
+        <div class="pause-keys">
+          <span><b>P</b> RESUME</span><span><b>R</b> RESTART</span><span><b>M</b> SOUND</span>
+        </div>
+        <button id="resume-button" class="small-button" type="button">RESUME RUN</button>
+      </div>
+    </section>
+
+    <section id="end-screen" class="screen end-screen hidden">
+      <div class="end-card">
+        <div id="end-kicker" class="panel-kicker">THE GREAT ESCAPE</div>
+        <h2 id="end-title">ESCAPED!</h2>
+        <p id="end-text">You made it to the wild. Gobble free.</p>
+        <div class="end-stats">
+          <div><span>SCORE</span><b id="end-score">0</b></div>
+          <div><span>DISTANCE</span><b id="end-distance">0 m</b></div>
+          <div><span>CORN</span><b id="end-corn">0</b></div>
+          <div><span>TIME</span><b id="end-time">0:00</b></div>
+        </div>
+        <div id="end-note" class="end-note">ESCAPE BONUS +1,000</div>
+        <button id="restart-button" class="start-button end-button" type="button">
+          <span class="start-main">RUN AGAIN</span>
+          <span class="start-sub">CLICK OR PRESS R</span>
+        </button>
+      </div>
+    </section>
+
+    <div id="sound-badge" class="sound-badge">SOUND ON · M</div>
+  </main>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
